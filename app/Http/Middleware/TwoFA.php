@@ -19,6 +19,6 @@ class TwoFA
             return $next($request);
         }
 
-        return redirect('/');
+        return redirect()->route('verify.get');
     }
 }

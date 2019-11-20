@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\OTPRequest;
+use Illuminate\Support\Facades\Cache;
 
 class VerifyOPTController extends Controller
 {
-    /**
-     * @name
-     *
-     * @return
-     */
-    public function verify(Request $request)
+    public function verify(OTPRequest $request)
     {
-        if(request('OTP') === Cache::get('OTP')) {
+        if(request('OTP') == auth()->user()->OTP()) {
             auth()->user()->update(['isVerified' => true]);
-            return response(null, 201);
+            return redirect()->route('home');
         }
+
+        return back()->withErrors('OTP has expired or is invalid');
+    }
+
+    public function showVerifyForm()
+    {
+        return view('OTP.verify');
     }
 }

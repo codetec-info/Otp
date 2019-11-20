@@ -40,12 +40,6 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    /**
-     * Attempt to log the user into the application.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return bool
-     */
     protected function attemptLogin(Request $request)
     {
         $result = $this->guard()->attempt(
@@ -53,13 +47,19 @@ class LoginController extends Controller
         );
 
         if($result) {
-            $otp = rand(100000, 999999);
-
-            Cache::put(['OTP'=> $otp], now()->addSeconds(50));
-
-            Mail::to('hsn.saad@outlook.com')->send(new OTPMail($otp));
+            auth()->user()->sendOTP(request('otp_via'));
         }
 
         return $result;
+    }
+
+    public function logout(Request $request)
+    {
+        auth()->user()->update(['isVerified' => 0]);
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+        return $this->loggedOut($request) ?: redirect('/');
     }
 }

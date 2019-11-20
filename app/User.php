@@ -2,8 +2,11 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
+use App\Mail\OTPMail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
 
 class User extends Authenticatable
 {
@@ -15,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'isVerified'
+        'name', 'email', 'password', 'isVerified',
     ];
 
     /**
@@ -36,8 +39,50 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function routeNotificationForKarix()
+    {
+        return $this->email;
+    }
+
+    /*
+     * Unique otp key for every user in cache
+     */
+    public function OTPKey()
+    {
+        return "OTP_for_{$this->id}";
+    }
+
+    /*
+     * Get the OTP from cache
+     */
     public function OTP()
     {
-        return Cache::get('OTP');
+        return Cache::get($this->OTPKey());
+    }
+
+    /*
+     * Cache the OTP for specific time
+     */
+    public function cacheTheOTP()
+    {
+        $otp = rand(100000, 999999);
+
+        Cache::put([$this->OTPKey() => $otp], now()->addSeconds(50));
+
+        return $otp;
+    }
+
+    /*
+     * Send the OTP by email/sms
+     */
+    public function sendOTP($via)
+    {
+        if($via == 'via_sms')
+        {
+            $this->notify(new OTPNotification);
+        }
+        else {
+            Mail::to('hsn.saad@outlook.com')->send(new OTPMail($this->cacheTheOTP()));
+        }
     }
 }
