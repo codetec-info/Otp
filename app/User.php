@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 /**
  * @property mixed id
  * @property mixed email
+ * @property mixed phone
  */
 class User extends Authenticatable
 {
@@ -46,7 +47,7 @@ class User extends Authenticatable
 
     public function routeNotificationForKarix()
     {
-        return $this->email;
+        return $this->phone;
     }
 
     /*
