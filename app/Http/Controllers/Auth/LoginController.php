@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Mail\OTPMail;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -46,9 +44,9 @@ class LoginController extends Controller
             $this->credentials($request), $request->filled('remember')
         );
 
-        if($result) {
-            auth()->user()->sendOTP(request('otp_via'));
-        }
+         if ($result) {
+             auth()->user()->sendOTP(request('otp_via'));
+         }
 
         return $result;
     }

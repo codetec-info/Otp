@@ -3,11 +3,16 @@
 namespace App;
 
 use App\Mail\OTPMail;
+use App\Notifications\OTPNotification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 
+/**
+ * @property mixed id
+ * @property mixed email
+ */
 class User extends Authenticatable
 {
     use Notifiable;
@@ -67,7 +72,7 @@ class User extends Authenticatable
     {
         $otp = rand(100000, 999999);
 
-        Cache::put([$this->OTPKey() => $otp], now()->addSeconds(50));
+        Cache::put($this->OTPKey(), $otp, now()->addSeconds(50));
 
         return $otp;
     }
@@ -77,12 +82,15 @@ class User extends Authenticatable
      */
     public function sendOTP($via)
     {
-        if($via == 'via_sms')
-        {
-            $this->notify(new OTPNotification);
-        }
-        else {
-            Mail::to('hsn.saad@outlook.com')->send(new OTPMail($this->cacheTheOTP()));
-        }
+        $this->notify(new OTPNotification($via, $this->cacheTheOTP()));
+
+        // Use notification to distinguish between 'via' instead of this condition
+//        if($via == 'via_sms')
+//        {
+//            $this->notify(new OTPNotification);
+//        }
+//        else {
+//            Mail::to('hsn.saad@outlook.com')->send(new OTPMail($otp));
+//        }
     }
 }

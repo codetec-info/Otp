@@ -7,19 +7,24 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Bitfumes\KarixNotificationChannel\KarixChannel;
+use Bitfumes\KarixNotificationChannel\KarixMessage;
 
 class OTPNotification extends Notification
 {
     use Queueable;
 
+    public $via, $OTP;
+
     /**
      * Create a new notification instance.
      *
-     * @return void
+     * @param $via
+     * @param $OTP
      */
-    public function __construct()
+    public function __construct($via, $OTP)
     {
-        //
+        $this->via = $via;
+        $this->OTP = $OTP;
     }
 
     /**
@@ -30,7 +35,7 @@ class OTPNotification extends Notification
      */
     public function via($notifiable)
     {
-        return [KarixChannel::class];
+        return $this->OTP == 'via_sms' ? [KarixChannel::class] : ['mail'];
     }
 
     public function toKarix($notifiable)
@@ -38,21 +43,19 @@ class OTPNotification extends Notification
         return KarixMessage::create()
                         ->from('+96170675298')
                         ->to('+96170675298')
-                        ->content('This is demo for OTP');
+                        ->content("Your OTP for login is {$this->OTP}");
     }
 
     /**
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+                    ->markdown('OTP', ['OTP' => $this->OTP]);
     }
 
     /**

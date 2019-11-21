@@ -20,7 +20,7 @@
                         @csrf
                         <div class="form-group">
                             {{--  <label for="otp">Enter your OTP</label>  --}}
-                            <input type="text" name="OTP" id="otp" class="form-control" required>
+                            <input type="text" name="OTP" id="otp" class="form-control" required value="{{ $otp }}">
                         </div>
                         <input type="submit" value="Verify" class="btn btn-info float-right">
                     </form>

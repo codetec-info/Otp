@@ -17,8 +17,8 @@ class VerifyOPTController extends Controller
         return back()->withErrors('OTP has expired or is invalid');
     }
 
-    public function showVerifyForm()
+    public function showVerifyForm($otp = '')
     {
-        return view('OTP.verify');
+        return view('OTP.verify', compact('otp'));
     }
 }

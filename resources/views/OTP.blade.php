@@ -1,10 +1,10 @@
 @component('mail::message')
 # Introduction
 
-Your OTP is {{ $otp }}.
+Your OTP is {{ $OTP }}.
 
-@component('mail::button', ['url' => ''])
-Button Text
+@component('mail::button', ['url' => route('verify.get', $OTP)])
+Authenticate
 @endcomponent
 
 Thanks,<br>

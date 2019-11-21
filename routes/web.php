@@ -19,7 +19,7 @@ Auth::routes();
 
 
 Route::post('/verifyOTP', 'VerifyOPTController@verify')->name('verify.post');
-Route::get('/verifyOTP', 'VerifyOPTController@showVerifyForm')->name('verify.get');
+Route::get('/verifyOTP/{otp?}', 'VerifyOPTController@showVerifyForm')->name('verify.get');
 
 
 Route::group(['middleware' => 'TwoFA'], function () {
