@@ -4,10 +4,9 @@ namespace App;
 
 use App\Mail\OTPMail;
 use App\Notifications\OTPNotification;
+use Cache;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Mail;
 
 /**
  * @property mixed id
@@ -86,7 +85,7 @@ class User extends Authenticatable
         $this->notify(new OTPNotification($via, $this->cacheTheOTP()));
 
         // Use notification to distinguish between 'via' instead of this condition
-//        if($via == 'via_sms')
+//        if($via == 'sms')
 //        {
 //            $this->notify(new OTPNotification);
 //        }

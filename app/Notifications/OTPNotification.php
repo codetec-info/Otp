@@ -35,7 +35,7 @@ class OTPNotification extends Notification
      */
     public function via($notifiable)
     {
-        return $this->via == 'via_sms' ? [KarixChannel::class] : ['mail'];
+        return $this->via == 'sms' ? [KarixChannel::class] : ['mail'];
     }
 
     /**
@@ -45,8 +45,8 @@ class OTPNotification extends Notification
     public function toKarix($notifiable)
     {
         return KarixMessage::create()
-//                        ->from('+96170675298') // this will use 'routeNotificationForKarix' in User::model
-                        ->to('+96170675298')
+                        ->from('+96170675298')
+//                        ->to('+96170675298') // this will use 'routeNotificationForKarix' in User::model
                         ->content("Your OTP for login is {$this->otp}");
     }
 
